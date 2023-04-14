@@ -6,19 +6,23 @@
 int main(void)
 {
   std::ofstream fs("cpptest.tga", std::fstream::binary | std::fstream::out);
-  char buff[3] = {0, 0, 0};
-  std::string text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam aliquam lectus ultrices sagittis dapibus. Curabitur dapibus lorem nec tellus consequat.";
-  int dataSize = text.size()/3;
-  int imgSize = (int)ceil(sqrt(dataSize));
-  char header[] = {0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, (char)imgSize, 0x00, (char)imgSize, 0x00, 0x18, 0x00};
+  std::ifstream ifs("lorem100w", std::fstream::binary | std::fstream::in);
+  char buff[3] = {0};
+  std::string data(std::istreambuf_iterator<char>(ifs), {});
+  uint16_t dataSize = data.size();
+  uint16_t pixelsNeeded = ceil(data.size()/3.);
+  uint16_t imgSize = (uint16_t)ceil(sqrt(pixelsNeeded));
+  char header[] = {0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, (char)(imgSize & 0xff), (char)(imgSize & 0xff00), (char)(imgSize & 0xff), (char)(imgSize & 0xff00), 0x18, 0x00};
   fs.write(header, 18);
   imgSize *= imgSize;
 
-  for(uint8_t i = 0; i < imgSize; i+=3) {
-    buff[0] = i < text.size() ? text[i] : 0;
-    buff[1] = i+1 < text.size() ? text[i+1] : 0;
-    buff[2] = i+2 < text.size() ? text[i+2] : 0;
+  int k = 0;
+  for(uint8_t i = 0; i < imgSize; ++i) {
+    buff[0] = k < dataSize ? data[k] : 0;
+    buff[1] = k+1 < dataSize ? data[k+1] : 0;
+    buff[2] = k+2 < dataSize ? data[k+2] : 0;
     fs.write(buff, 3);
+    k += 3;
   }
 
   
