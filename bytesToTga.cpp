@@ -1,13 +1,10 @@
 #include <iostream>
 #include <fstream>
-#include <random>
-#include <time.h>
 #include <string>
 #include <cmath>
 
 int main(void)
 {
-  srand(time(NULL));
   std::ofstream fs("cpptest.tga", std::fstream::binary | std::fstream::out);
   char buff[3] = {0, 0, 0};
   std::string text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam aliquam lectus ultrices sagittis dapibus. Curabitur dapibus lorem nec tellus consequat.";
@@ -17,7 +14,7 @@ int main(void)
   fs.write(header, 18);
   imgSize *= imgSize;
 
-  for(uint8_t i = 0; i < imgSize; ++i) {
+  for(uint8_t i = 0; i < imgSize; i+=3) {
     buff[0] = i < text.size() ? text[i] : 0;
     buff[1] = i+1 < text.size() ? text[i+1] : 0;
     buff[2] = i+2 < text.size() ? text[i+2] : 0;
