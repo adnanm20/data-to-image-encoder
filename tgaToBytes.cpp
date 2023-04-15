@@ -2,11 +2,31 @@
 #include <fstream>
 #include <string>
 #include <cmath>
+#include <string.h>
 
-int main(void)
+int main(int argc, char *argv[])
 {
-  std::ifstream fs("cpptest.tga", std::fstream::binary | std::fstream::in);
-  std::ofstream ofs("output", std::fstream::binary | std::fstream::out);
+  char *input;
+  char defaultOutput[] = "output";
+  char *output = defaultOutput;
+  bool inputSet = false, outputSet = false;
+  for(int i = 0; i < argc; ++i) {
+    if(strcmp(argv[i], "-i") == 0 && (i+1) < argc) {
+      input = argv[i+1];
+      inputSet = true;
+    }
+    if(strcmp(argv[i], "-o") == 0 && (i+1) < argc) {
+      output = argv[i+1];
+      outputSet = true;
+    }
+  }
+  if(!inputSet || !outputSet)
+  {
+    std::cout << "provide input and output file \"-i inputfilename -o outputfilename\"" << std::endl;
+    return 0;
+  }
+  std::ifstream fs(input, std::fstream::binary | std::fstream::in);
+  std::ofstream ofs(output, std::fstream::binary | std::fstream::out);
   char buff[3] = {0};
   char header[18];
   std::string text = "";
