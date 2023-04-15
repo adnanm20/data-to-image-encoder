@@ -6,15 +6,20 @@
 int main(void)
 {
   std::ifstream fs("cpptest.tga", std::fstream::binary | std::fstream::in);
+  std::ofstream ofs("output", std::fstream::binary | std::fstream::out);
   char buff[3] = {0};
   char header[18];
   std::string text = "";
   fs.read(header, 18);
-  uint16_t width = header[12] | (header[13] << 8);
-  uint16_t height = header[14] | (header[15] << 8);
+  unsigned short width = (uint16_t)(uint8_t)header[12] | ((uint16_t)header[13] << 8);
+  unsigned short height = (uint16_t)(uint8_t)header[14] | ((uint16_t)header[15] << 8);
 
-  int size = width * height;
+  uint16_t size = width * height;
   for(int i = 0; i < size; ++i) {
+    if(text.size() > 100) {
+      ofs << text;
+      text = "";
+    }
     fs.read(buff, 3);
     if(buff[0] == 0)
     {
@@ -33,9 +38,7 @@ int main(void)
     text += buff[2];
   }
 
-  std::cout << text << std::endl;
-
-
+  ofs << text;
   
   fs.close();
   return 0;
