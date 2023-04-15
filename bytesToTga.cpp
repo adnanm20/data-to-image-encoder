@@ -48,6 +48,12 @@ int main(int argc, char *argv[])
     }
   }
 
+  buff[0] = 0;
+  buff[1] = 0;
+  buff[2] = 0;
+  fs.write(buff, 3);
+  ++pixelsNeeded;
+
   int imgSize = (uint16_t)ceil(sqrt(pixelsNeeded));
   header[12] = (char)(imgSize & 0xff);
   header[13] = (char)(imgSize & 0xff00);
